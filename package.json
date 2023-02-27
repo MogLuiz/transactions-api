@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "fastify": "^4.13.0"
   }
 }
