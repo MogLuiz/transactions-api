@@ -1,6 +1,6 @@
 import { app } from '../app'
 import request from 'supertest'
-import { transactionData } from './mock'
+import { debitTransactionData, transactionData } from './mock'
 import { execSync } from 'node:child_process'
 import { afterAll, beforeAll, it, expect, describe, beforeEach } from 'vitest'
 
@@ -71,5 +71,27 @@ describe('Transactions routes', () => {
         amount: transactionData.amount,
       }),
     )
+  })
+
+  it('should be able to get the summary', async () => {
+    const createTransactionResponse = await request(app.server)
+      .post('/transactions')
+      .send(transactionData)
+
+    const cookies = createTransactionResponse.get('Set-Cookie')
+
+    await request(app.server)
+      .post('/transactions')
+      .set('Cookie', cookies)
+      .send(debitTransactionData)
+
+    const showSummaryResponse = await request(app.server)
+      .get('/transactions/summary')
+      .set('Cookie', cookies)
+      .expect(200)
+
+    expect(showSummaryResponse.body.summary).toEqual({
+      amount: transactionData.amount - debitTransactionData.amount,
+    })
   })
 })
