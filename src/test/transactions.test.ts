@@ -1,6 +1,7 @@
-import { afterAll, beforeAll, it, expect, describe } from 'vitest'
-import request from 'supertest'
 import { app } from '../app'
+import request from 'supertest'
+import { transactionData } from './mock'
+import { afterAll, beforeAll, it, expect, describe } from 'vitest'
 
 beforeAll(async () => {
   await app.ready()
@@ -11,12 +12,6 @@ afterAll(async () => {
 })
 
 describe('Transactions routes', () => {
-  const transactionData = {
-    title: 'New transaction',
-    amount: 5000,
-    type: 'credit',
-  }
-
   it('should user create a new transaction', async () => {
     const response = await request(app.server)
       .post('/transactions')
